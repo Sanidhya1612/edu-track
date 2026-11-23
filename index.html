@@ -1,1 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Mentor Student Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
 
+  <!-- 1. LOGIN & AUTHENTICATION -->
+  <div id="login-screen" class="login-overlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="logo-mark">ET</div>
+        <div>
+          <h2>EduTrack</h2>
+          <p class="subtitle">Academic Mentor Monitoring Portal</p>
+        </div>
+      </div>
+      <form id="login-form">
+        <label for="login-user">Mentor Email or Username</label>
+        <input type="text" id="login-user" placeholder="mentor@edutrack.edu" value="mentor@edutrack.edu" required />
+        <label for="login-pass">Password</label>
+        <input type="password" id="login-pass" placeholder="Enter password" value="admin123" required />
+        <p id="login-error" class="error-text hidden">Invalid username/email or password.</p>
+        <button type="submit" class="btn-primary full-width">Sign In to Dashboard</button>
+      </form>
+      <div class="login-hint">
+        <small>Default Demo Account: <strong>mentor@edutrack.edu</strong> / <strong>admin123</strong></small>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN WORKSPACE -->
+  <div id="app-container" class="app-layout hidden">
+    <!-- Dark Navy Sidebar -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <div class="logo-mark">ET</div>
+          <div>
+            <h2>EduTrack</h2>
+            <span>Mentor Dashboard</span>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <button class="nav-item active" data-page="dashboard">Dashboard Overview</button>
+          <button class="nav-item" data-page="students">Students Directory</button>
+          <button class="nav-item" data-page="at-risk">At-Risk Monitoring</button>
+          <button class="nav-item" data-page="mentor-profile">Mentor Profile & Accounts</button>
+        </nav>
+      </div>
+
+      <!-- Expandable Active Mentor Section in Sidebar -->
+      <div class="sidebar-footer">
+        <div id="sidebar-account-toggle" class="mentor-badge" title="Click to expand account details">
+          <div class="avatar" id="sidebar-avatar">RV</div>
+          <div class="mentor-meta">
+            <strong id="sidebar-mentor-name">Dr. R. Verma</strong>
+            <small id="sidebar-mentor-role">Active Operator</small>
+          </div>
+          <span id="sidebar-chevron">▾</span>
+        </div>
+        <div id="sidebar-account-drawer" class="account-drawer hidden">
+          <p id="drawer-email">mentor@edutrack.edu</p>
+          <p id="drawer-dept">CSE (AI & DS)</p>
+          <button class="btn-small" onclick="switchPage('mentor-profile')">Manage Accounts</button>
+        </div>
+        <button id="logout-btn" class="btn-outline">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Light Content Area -->
+    <main class="main-content">
+      <!-- Top Bar: Dataset Switcher & Excel Actions -->
+      <header class="topbar">
+        <div class="dataset-switcher" id="dataset-tabs">
+          <button class="ds-btn active" data-ds="file1">Dataset 1 (file1.xlsx)</button>
+          <button class="ds-btn" data-ds="file2">Dataset 2 (file2.xlsx)</button>
+        </div>
+
+        <div class="topbar-actions">
+          <label class="btn-secondary file-upload-label">
+            + Import .xlsx
+            <input type="file" id="excel-upload" accept=".xlsx,.xls" hidden />
+          </label>
+          <button id="reset-btn" class="btn-secondary">Reset Edits</button>
+          <button id="export-btn" class="btn-primary">Export Current .xlsx</button>
+        </div>
+      </header>
+
+      <!-- PAGE 1: DASHBOARD HOME -->
+      <section id="page-dashboard" class="page-view">
+        <div class="page-header">
+          <div>
+            <h1>Dashboard Overview</h1>
+            <p class="muted" id="active-dataset-label">Viewing: Dataset 1 (file1.xlsx)</p>
+          </div>
+        </div>
+
+        <!-- 5 Summary KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span>Total Students</span>
+            <h3 id="kpi-total">0</h3>
+          </div>
+          <div class="kpi-card active-border">
+            <span>Active Students</span>
+            <h3 id="kpi-active">0</h3>
+          </div>
+          <div class="kpi-card risk-border">
+            <span>At-Risk Students</span>
+            <h3 id="kpi-risk">0</h3>
+          </div>
+          <div class="kpi-card inactive-border">
+            <span>Inactive Students</span>
+            <h3 id="kpi-inactive">0</h3>
+          </div>
+          <div class="kpi-card completed-border">
+            <span>Completed Students</span>
+            <h3 id="kpi-completed">0</h3>
+          </div>
+        </div>
+
+        <!-- Quick At-Risk Priority & Mentor Breakdown -->
+        <div class="dashboard-split">
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Priority At-Risk Students</h3>
+              <button class="btn-link" onclick="switchPage('at-risk')">View All At-Risk →</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Remarks</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-risk-tbody"></tbody>
+            </table>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Mentor Workload Summary</h3>
+            </div>
+            <div id="mentor-summary-list" class="summary-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 2 & 3: STUDENTS DIRECTORY & AT-RISK MONITORING -->
+      <section id="page-students" class="page-view hidden">
+        <div class="page-header">
+          <div>
+            <h1 id="students-page-title">Students Directory</h1>
+            <p class="muted">Search across Student ID, Name, Email, Course, or Mentor</p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="Search by Student ID, Name, Email, Course, or Mentor..." />
+          <select id="mentor-filter">
+            <option value="All">All Mentors</option>
+          </select>
+          <select id="status-filter">
+            <option value="All">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="At Risk">At Risk</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="table-card">
+          <div class="table-meta">
+            <span id="showing-count">Showing 0 students</span>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th>Course</th>
+                  <th>Assigned Mentor</th>
+                  <th>Status</th>
+                  <th>Mentor Remarks</th>
+                  <th>Profile</th>
+                </tr>
+              </thead>
+              <tbody id="student-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 4: MENTOR PROFILE & MULTI-ACCOUNT MANAGER -->
+      <section id="page-mentor-profile" class="page-view hidden">
+        <div class="page-header">
+          <h1>Mentor Profile & Account Management</h1>
+        </div>
+
+        <div class="dashboard-split">
+          <div class="panel-card">
+            <h3>Active Mentor Account</h3>
+            <div class="profile-details" id="active-mentor-details"></div>
+          </div>
+
+          <div class="panel-card">
+            <h3>Add New Mentor Account</h3>
+            <form id="add-mentor-form">
+              <label>Full Name</label>
+              <input type="text" id="new-mentor-name" placeholder="e.g., Prof. A. Kulkarni" required />
+              <label>Email / Username</label>
+              <input type="email" id="new-mentor-email" placeholder="e.g., kulkarni@edutrack.edu" required />
+              <label>Department</label>
+              <input type="text" id="new-mentor-dept" placeholder="e.g., Computer Engineering" required />
+              <label>Password</label>
+              <input type="password" id="new-mentor-pass" placeholder="Set login password" required />
+              <button type="submit" class="btn-primary full-width">Create Mentor Account</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel-card" style="margin-top: 1.5rem;">
+          <h3>Registered Mentor Accounts</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email / Username</th>
+                <th>Department</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="mentor-accounts-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 3. INDIVIDUAL STUDENT PROFILE & REMARKS MODAL -->
+  <div id="student-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="modal-name">Student Name</h3>
+          <small class="muted" id="modal-id-badge">ID</small>
+        </div>
+        <button id="close-modal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-grid">
+          <div><small>Email Address</small><p id="modal-email"></p></div>
+          <div><small>Registered Course</small><p id="modal-course"></p></div>
+          <div><small>Assigned Mentor</small><p id="modal-mentor"></p></div>
+          <div><small>Dataset Source</small><p id="modal-dataset"></p></div>
+        </div>
+
+        <label for="modal-status">Current Student Status</label>
+        <select id="modal-status">
+          <option value="Active">Active</option>
+          <option value="At Risk">At Risk</option>
+          <option value="Inactive">Inactive</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <label for="modal-remarks">Internal Mentor Remarks</label>
+        <textarea id="modal-remarks" rows="4" placeholder="Record observations, counseling notes, or follow-up actions..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="cancel-modal-btn" class="btn-secondary">Cancel</button>
+        <button id="save-student-btn" class="btn-primary">Save Student Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
