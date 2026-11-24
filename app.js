@@ -7,7 +7,7 @@ const DEFAULT_MENTORS = [
   { name: "Dr. P. Nair", email: "nair@edutrack.edu", username: "nair", password: "123", dept: "Artificial Intelligence" }
 ];
 
-// Generate 50 demo students (10 students assigned under each of the 5 mentors)
+// 50 Demo Students (10 under each of the 5 mentors)
 const DEMO_NAMES = [
   "Aarav Sharma", "Diya Patil", "Rohan Mehta", "Ananya Iyer", "Kabir Singh",
   "Sneha Rao", "Vikram Joshi", "Meera Nair", "Aditya Verma", "Priya Kulkarni",
@@ -18,7 +18,7 @@ const DEMO_NAMES = [
   "Varun Khanna", "Mansi Kulkarni", "Rajat Chatterjee", "Bhavna Solanki", "Aryan Sengupta",
   "Komal Pawar", "Gaurav Thakur", "Simran Kaur", "Manish Pandey", "Zoya Khan",
   "Lakshay Jain", "Swati Bhosale", "Deepak Rawat", "Pallavi Deshpande", "Saurabh Yadav",
-  "Ayesha Sheikh", "chirag Patel", "Ritika Verma", "Mohit Chauhan", "Sakshi Jadhav"
+  "Ayesha Sheikh", "Chirag Patel", "Ritika Verma", "Mohit Chauhan", "Sakshi Jadhav"
 ];
 
 const DEMO_STATUSES = [
@@ -39,7 +39,7 @@ const DEMO_STUDENTS = DEMO_NAMES.map((fullName, index) => {
   const emailSlug = fullName.toLowerCase().replace(/\s+/g, ".");
   return {
     Student_ID: `STU${101 + index}`,
-    Name: fullName.charAt(0).toUpperCase() + fullName.slice(1),
+    Name: fullName,
     Email: `${emailSlug}@college.edu`,
     Course: `B.Tech ${mentorObj.dept}`,
     Mentor: mentorObj.name,
@@ -50,8 +50,9 @@ const DEMO_STUDENTS = DEMO_NAMES.map((fullName, index) => {
 
 let mentors = JSON.parse(localStorage.getItem("edutrack_mentors")) || DEFAULT_MENTORS;
 let activeMentor = null;
+let mentorChartInstance = null;
+let statusChartInstance = null;
 
-// Separate datasets registry (never merged)
 const DATASETS = {
   file1: { label: "Dataset 1 (file1.xlsx)", path: "data/file1.xlsx", records: [] },
   file2: { label: "Dataset 2 (file2.xlsx)", path: "data/file2.xlsx", records: [] }
@@ -59,7 +60,13 @@ const DATASETS = {
 let currentDsKey = "file1";
 let editingIndex = null;
 
-// --- 1. LOGIN & AUTHENTICATION ---
+// --- 1. LOGIN & QUICK DEMO ---
+window.quickLogin = function(email, pass) {
+  document.getElementById("login-user").value = email;
+  document.getElementById("login-pass").value = pass;
+  document.getElementById("login-form").dispatchEvent(new Event("submit"));
+};
+
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const idInput = document.getElementById("login-user").value.trim().toLowerCase();
@@ -136,7 +143,7 @@ document.getElementById("add-mentor-form").addEventListener("submit", (e) => {
   alert(`Mentor account created for ${name}.`);
 });
 
-// --- 3. EXCEL LOADING & SEPARATE DATASET MANAGEMENT ---
+// --- 3. EXCEL LOADING ---
 function normalizeRow(row, idx) {
   return {
     Student_ID: row.Student_ID || row["Student ID"] || row.ID || `STU${100 + idx}`,
@@ -170,13 +177,11 @@ async function loadDataset(dsKey) {
       DATASETS[dsKey].records = raw.length > 0 ? raw.map(normalizeRow) : (dsKey === "file1" ? [...DEMO_STUDENTS] : []);
     } catch (err) {
       DATASETS[dsKey].records = dsKey === "file1" ? [...DEMO_STUDENTS] : [];
-      console.warn(`Could not fetch ${DATASETS[dsKey].path}, using fallback:`, err);
     }
   }
   refreshAllViews();
 }
 
-// Import additional .xlsx as a separate selectable tab
 document.getElementById("excel-upload").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -208,18 +213,72 @@ document.querySelectorAll(".ds-btn").forEach(btn => {
   btn.addEventListener("click", () => selectDatasetTab(btn.dataset.ds));
 });
 
-// --- 4. RENDERING KPIs, TABLES & FILTERS ---
+// --- 4. CHARTS & DASHBOARD RENDERING ---
+function renderCharts(list) {
+  const counts = {};
+  list.forEach(s => { counts[s.Mentor] = (counts[s.Mentor] || 0) + 1; });
+
+  if (mentorChartInstance) mentorChartInstance.destroy();
+  mentorChartInstance = new Chart(document.getElementById("mentorChart"), {
+    type: "bar",
+    data: {
+      labels: Object.keys(counts),
+      datasets: [{
+        label: "Assigned Students",
+        data: Object.values(counts),
+        backgroundColor: "#06b6d4",
+        borderRadius: 6,
+        barThickness: 28
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: "#1e293b" }, ticks: { color: "#94a3b8", stepSize: 2 } },
+        x: { grid: { display: false }, ticks: { color: "#cbd5e1" } }
+      }
+    }
+  });
+
+  const active = list.filter(s => s.Status === "Active").length;
+  const risk = list.filter(s => s.Status === "At Risk").length;
+  const inactive = list.filter(s => s.Status === "Inactive").length;
+  const completed = list.filter(s => s.Status === "Completed").length;
+
+  if (statusChartInstance) statusChartInstance.destroy();
+  statusChartInstance = new Chart(document.getElementById("statusChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["Active", "At Risk", "Inactive", "Completed"],
+      datasets: [{
+        data: [active, risk, inactive, completed],
+        backgroundColor: ["#10b981", "#f43f5e", "#64748b", "#06b6d4"],
+        borderWidth: 2,
+        borderColor: "#111827"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "72%",
+      plugins: {
+        legend: { position: "bottom", labels: { color: "#cbd5e1", boxWidth: 12, padding: 14 } }
+      }
+    }
+  });
+}
+
 function refreshAllViews() {
   const list = DATASETS[currentDsKey].records;
 
-  // KPIs
   document.getElementById("kpi-total").textContent = list.length;
   document.getElementById("kpi-active").textContent = list.filter(s => s.Status === "Active").length;
   document.getElementById("kpi-risk").textContent = list.filter(s => s.Status === "At Risk").length;
   document.getElementById("kpi-inactive").textContent = list.filter(s => s.Status === "Inactive").length;
   document.getElementById("kpi-completed").textContent = list.filter(s => s.Status === "Completed").length;
 
-  // Populate Mentor Filter Dropdown
   const mentorSelect = document.getElementById("mentor-filter");
   const prevMentor = mentorSelect.value;
   const uniqueMentors = [...new Set(list.map(s => s.Mentor).filter(Boolean))];
@@ -227,25 +286,19 @@ function refreshAllViews() {
     uniqueMentors.map(m => `<option value="${m}">${m}</option>`).join("");
   if (uniqueMentors.includes(prevMentor)) mentorSelect.value = prevMentor;
 
-  // Dashboard Priority At-Risk Table (Top 8)
   const atRiskList = list.map((s, idx) => ({ ...s, _idx: idx })).filter(s => s.Status === "At Risk");
   document.getElementById("dashboard-risk-tbody").innerHTML = atRiskList.slice(0, 8).map(s => `
     <tr>
       <td><strong>${s.Student_ID}</strong></td>
       <td>${s.Name}</td>
       <td>${s.Course}</td>
+      <td>${s.Mentor}</td>
       <td>${s.Remarks || "Needs review"}</td>
       <td><button class="btn-secondary" onclick="openProfile(${s._idx})">Inspect</button></td>
     </tr>
-  `).join("") || `<tr><td colspan="5" class="muted">No At-Risk students in this dataset.</td></tr>`;
+  `).join("") || `<tr><td colspan="6" class="muted">No At-Risk students in this dataset.</td></tr>`;
 
-  // Mentor Workload Summary
-  const counts = {};
-  list.forEach(s => { counts[s.Mentor] = (counts[s.Mentor] || 0) + 1; });
-  document.getElementById("mentor-summary-list").innerHTML = Object.entries(counts).map(([m, c]) => `
-    <div class="summary-item"><span>${m}</span><strong>${c} students</strong></div>
-  `).join("") || `<p class="muted">No records loaded.</p>`;
-
+  renderCharts(list);
   renderStudentTable();
   updateMentorUI();
 }
@@ -315,7 +368,7 @@ document.getElementById("search-input").addEventListener("input", renderStudentT
 document.getElementById("status-filter").addEventListener("change", renderStudentTable);
 document.getElementById("mentor-filter").addEventListener("change", renderStudentTable);
 
-// --- 6. INDIVIDUAL STUDENT PROFILE & REMARKS MODAL ---
+// --- 6. MODAL ---
 window.openProfile = function(idx) {
   editingIndex = idx;
   const s = DATASETS[currentDsKey].records[idx];
