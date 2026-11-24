@@ -6,61 +6,75 @@
   <title>EduTrack — Mentor Student Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
   <!-- 1. LOGIN & AUTHENTICATION -->
   <div id="login-screen" class="login-overlay">
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="logo-mark">ET</div>
-        <div>
-          <h2>EduTrack</h2>
-          <p class="subtitle">Academic Mentor Monitoring Portal</p>
-        </div>
+    <div class="login-wrapper">
+      <div class="login-brand-center">
+        <div class="logo-gradient">ET</div>
+        <h1>EduTrack</h1>
+        <p class="subtitle">Mentor & Student Monitoring Portal</p>
       </div>
-      <form id="login-form">
-        <label for="login-user">Mentor Email or Username</label>
-        <input type="text" id="login-user" placeholder="mentor@edutrack.edu" value="mentor@edutrack.edu" required />
-        <label for="login-pass">Password</label>
-        <input type="password" id="login-pass" placeholder="Enter password" value="admin123" required />
-        <p id="login-error" class="error-text hidden">Invalid username/email or password.</p>
-        <button type="submit" class="btn-primary full-width">Sign In to Dashboard</button>
-      </form>
-      <div class="login-hint">
-        <small>Default Demo Account: <strong>mentor@edutrack.edu</strong> / <strong>admin123</strong></small>
+
+      <div class="login-card">
+        <h2>Sign in</h2>
+        <p class="muted" style="margin-bottom: 1.25rem;">Use your mentor credentials or pick a quick demo account below.</p>
+        <form id="login-form">
+          <label for="login-user">Mentor Email or Username</label>
+          <input type="text" id="login-user" placeholder="mentor@edutrack.edu" value="mentor@edutrack.edu" required />
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" placeholder="Enter password" value="admin123" required />
+          <p id="login-error" class="error-text hidden">Invalid username/email or password.</p>
+          <button type="submit" class="btn-primary full-width">Sign in &rarr;</button>
+        </form>
+
+        <div class="divider"><span>or quick demo mentor</span></div>
+        <div class="quick-demo-grid">
+          <button type="button" class="btn-demo" onclick="quickLogin('mentor@edutrack.edu', 'admin123')">Dr. R. Verma</button>
+          <button type="button" class="btn-demo" onclick="quickLogin('kulkarni@edutrack.edu', '123')">Prof. S. Kulkarni</button>
+          <button type="button" class="btn-demo" onclick="quickLogin('deshmukh@edutrack.edu', '123')">Dr. A. Deshmukh</button>
+          <button type="button" class="btn-demo" onclick="quickLogin('joshi@edutrack.edu', '123')">Prof. N. Joshi</button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 2. MAIN WORKSPACE -->
   <div id="app-container" class="app-layout hidden">
-    <!-- Dark Navy Sidebar -->
+    <!-- Dark Sidebar -->
     <aside class="sidebar">
       <div>
         <div class="brand">
-          <div class="logo-mark">ET</div>
+          <div class="logo-gradient small">ET</div>
           <div>
             <h2>EduTrack</h2>
-            <span>Mentor Dashboard</span>
+            <span>Mentor Portal</span>
           </div>
         </div>
 
+        <div class="nav-section-label">WORKSPACE</div>
         <nav class="nav-menu">
-          <button class="nav-item active" data-page="dashboard">Dashboard Overview</button>
+          <button class="nav-item active" data-page="dashboard">Dashboard</button>
           <button class="nav-item" data-page="students">Students Directory</button>
           <button class="nav-item" data-page="at-risk">At-Risk Monitoring</button>
-          <button class="nav-item" data-page="mentor-profile">Mentor Profile & Accounts</button>
+        </nav>
+
+        <div class="nav-section-label" style="margin-top: 1.5rem;">SYSTEM</div>
+        <nav class="nav-menu">
+          <button class="nav-item" data-page="mentor-profile">Mentor Accounts</button>
         </nav>
       </div>
 
-      <!-- Expandable Active Mentor Section in Sidebar -->
+      <!-- Expandable Active Mentor Section -->
       <div class="sidebar-footer">
         <div id="sidebar-account-toggle" class="mentor-badge" title="Click to expand account details">
           <div class="avatar" id="sidebar-avatar">RV</div>
           <div class="mentor-meta">
             <strong id="sidebar-mentor-name">Dr. R. Verma</strong>
-            <small id="sidebar-mentor-role">Active Operator</small>
+            <small id="sidebar-mentor-role">Active Mentor</small>
           </div>
           <span id="sidebar-chevron">▾</span>
         </div>
@@ -73,13 +87,15 @@
       </div>
     </aside>
 
-    <!-- Light Content Area -->
+    <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Top Bar: Dataset Switcher & Excel Actions -->
+      <!-- Top Bar -->
       <header class="topbar">
-        <div class="dataset-switcher" id="dataset-tabs">
-          <button class="ds-btn active" data-ds="file1">Dataset 1 (file1.xlsx)</button>
-          <button class="ds-btn" data-ds="file2">Dataset 2 (file2.xlsx)</button>
+        <div class="topbar-left">
+          <div class="dataset-switcher" id="dataset-tabs">
+            <button class="ds-btn active" data-ds="file1">Dataset 1 (file1.xlsx)</button>
+            <button class="ds-btn" data-ds="file2">Dataset 2 (file2.xlsx)</button>
+          </div>
         </div>
 
         <div class="topbar-actions">
@@ -88,7 +104,7 @@
             <input type="file" id="excel-upload" accept=".xlsx,.xls" hidden />
           </label>
           <button id="reset-btn" class="btn-secondary">Reset Edits</button>
-          <button id="export-btn" class="btn-primary">Export Current .xlsx</button>
+          <button id="export-btn" class="btn-primary">Export .xlsx</button>
         </div>
       </header>
 
@@ -104,53 +120,83 @@
         <!-- 5 Summary KPI Cards -->
         <div class="kpi-grid">
           <div class="kpi-card">
-            <span>Total Students</span>
+            <div class="kpi-top">
+              <span>Total Students</span>
+              <div class="kpi-icon indigo">👥</div>
+            </div>
             <h3 id="kpi-total">0</h3>
           </div>
-          <div class="kpi-card active-border">
-            <span>Active Students</span>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span>Active Students</span>
+              <div class="kpi-icon emerald">✓</div>
+            </div>
             <h3 id="kpi-active">0</h3>
           </div>
-          <div class="kpi-card risk-border">
-            <span>At-Risk Students</span>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span>At-Risk Students</span>
+              <div class="kpi-icon rose">⚠</div>
+            </div>
             <h3 id="kpi-risk">0</h3>
           </div>
-          <div class="kpi-card inactive-border">
-            <span>Inactive Students</span>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span>Inactive</span>
+              <div class="kpi-icon slate">⏸</div>
+            </div>
             <h3 id="kpi-inactive">0</h3>
           </div>
-          <div class="kpi-card completed-border">
-            <span>Completed Students</span>
+          <div class="kpi-card">
+            <div class="kpi-top">
+              <span>Completed</span>
+              <div class="kpi-icon blue">🎓</div>
+            </div>
             <h3 id="kpi-completed">0</h3>
           </div>
         </div>
 
-        <!-- Quick At-Risk Priority & Mentor Breakdown -->
-        <div class="dashboard-split">
+        <!-- Charts Row -->
+        <div class="charts-grid">
           <div class="panel-card">
             <div class="panel-header">
-              <h3>Priority At-Risk Students</h3>
-              <button class="btn-link" onclick="switchPage('at-risk')">View All At-Risk →</button>
+              <h3>Students per Mentor</h3>
             </div>
+            <div class="chart-box">
+              <canvas id="mentorChart"></canvas>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3>Risk & Status Overview</h3>
+            </div>
+            <div class="chart-box">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority At-Risk Table -->
+        <div class="panel-card" style="margin-top: 1.25rem;">
+          <div class="panel-header">
+            <h3>Priority At-Risk Students</h3>
+            <button class="btn-link" onclick="switchPage('at-risk')">View All At-Risk &rarr;</button>
+          </div>
+          <div class="table-wrapper">
             <table>
               <thead>
                 <tr>
                   <th>Student ID</th>
                   <th>Name</th>
                   <th>Course</th>
+                  <th>Mentor</th>
                   <th>Remarks</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody id="dashboard-risk-tbody"></tbody>
             </table>
-          </div>
-
-          <div class="panel-card">
-            <div class="panel-header">
-              <h3>Mentor Workload Summary</h3>
-            </div>
-            <div id="mentor-summary-list" class="summary-list"></div>
           </div>
         </div>
       </section>
@@ -230,7 +276,7 @@
           </div>
         </div>
 
-        <div class="panel-card" style="margin-top: 1.5rem;">
+        <div class="panel-card" style="margin-top: 1.25rem;">
           <h3>Registered Mentor Accounts</h3>
           <table>
             <thead>
