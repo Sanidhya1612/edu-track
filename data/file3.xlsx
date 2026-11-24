@@ -1,0 +1,51 @@
+Student_ID	Name	Email	Course	Mentor	Status	Remarks
+STU101	Aarav Sharma	aarav.sharma@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Active	Consistent attendance and coursework progress
+STU102	Diya Patil	diya.patil@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Active	Consistent attendance and coursework progress
+STU103	Rohan Mehta	rohan.mehta@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	At Risk	Needs mentor follow-up on recent assessments
+STU104	Ananya Iyer	ananya.iyer@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Active	Consistent attendance and coursework progress
+STU105	Kabir Singh	kabir.singh@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Completed	Completed semester mentoring cycle
+STU106	Sneha Rao	sneha.rao@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	At Risk	Needs mentor follow-up on recent assessments
+STU107	Vikram Joshi	vikram.joshi@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Active	Consistent attendance and coursework progress
+STU108	Meera Nair	meera.nair@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Inactive	No recent activity recorded in portal
+STU109	Aditya Verma	aditya.verma@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Active	Consistent attendance and coursework progress
+STU110	Priya Kulkarni	priya.kulkarni@college.edu	B.Tech CSE (AI & DS)	Dr. R. Verma	Completed	Completed semester mentoring cycle
+STU111	Siddharth Gupta	siddharth.gupta@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Active	Consistent attendance and coursework progress
+STU112	Ishita Deshmukh	ishita.deshmukh@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Active	Consistent attendance and coursework progress
+STU113	Arjun Malhotra	arjun.malhotra@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	At Risk	Needs mentor follow-up on recent assessments
+STU114	Kavya Reddy	kavya.reddy@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Active	Consistent attendance and coursework progress
+STU115	Nikhil Bansal	nikhil.bansal@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Completed	Completed semester mentoring cycle
+STU116	Tanvi Chavan	tanvi.chavan@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	At Risk	Needs mentor follow-up on recent assessments
+STU117	Pranav Saxena	pranav.saxena@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Active	Consistent attendance and coursework progress
+STU118	Riya Kapoor	riya.kapoor@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Inactive	No recent activity recorded in portal
+STU119	Karan Choudhary	karan.choudhary@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Active	Consistent attendance and coursework progress
+STU120	Neha Agarwal	neha.agarwal@college.edu	B.Tech Computer Science	Prof. S. Kulkarni	Completed	Completed semester mentoring cycle
+STU121	Yashwant More	yashwant.more@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Active	Consistent attendance and coursework progress
+STU122	Pooja Hegde	pooja.hegde@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Active	Consistent attendance and coursework progress
+STU123	Devansh Mishra	devansh.mishra@college.edu	B.Tech Data Science	Dr. A. Deshmukh	At Risk	Needs mentor follow-up on recent assessments
+STU124	Shruti Menon	shruti.menon@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Active	Consistent attendance and coursework progress
+STU125	Harshvardhan Tiwari	harshvardhan.tiwari@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Completed	Completed semester mentoring cycle
+STU126	Sanya Mirza	sanya.mirza@college.edu	B.Tech Data Science	Dr. A. Deshmukh	At Risk	Needs mentor follow-up on recent assessments
+STU127	Omkar Shinde	omkar.shinde@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Active	Consistent attendance and coursework progress
+STU128	Nandini Pillai	nandini.pillai@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Inactive	No recent activity recorded in portal
+STU129	Tushar Bhatt	tushar.bhatt@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Active	Consistent attendance and coursework progress
+STU130	Aditi Gokhale	aditi.gokhale@college.edu	B.Tech Data Science	Dr. A. Deshmukh	Completed	Completed semester mentoring cycle
+STU131	Varun Khanna	varun.khanna@college.edu	B.Tech Information Technology	Prof. N. Joshi	Active	Consistent attendance and coursework progress
+STU132	Mansi Kulkarni	mansi.kulkarni@college.edu	B.Tech Information Technology	Prof. N. Joshi	Active	Consistent attendance and coursework progress
+STU133	Rajat Chatterjee	rajat.chatterjee@college.edu	B.Tech Information Technology	Prof. N. Joshi	At Risk	Needs mentor follow-up on recent assessments
+STU134	Bhavna Solanki	bhavna.solanki@college.edu	B.Tech Information Technology	Prof. N. Joshi	Active	Consistent attendance and coursework progress
+STU135	Aryan Sengupta	aryan.sengupta@college.edu	B.Tech Information Technology	Prof. N. Joshi	Completed	Completed semester mentoring cycle
+STU136	Komal Pawar	komal.pawar@college.edu	B.Tech Information Technology	Prof. N. Joshi	At Risk	Needs mentor follow-up on recent assessments
+STU137	Gaurav Thakur	gaurav.thakur@college.edu	B.Tech Information Technology	Prof. N. Joshi	Active	Consistent attendance and coursework progress
+STU138	Simran Kaur	simran.kaur@college.edu	B.Tech Information Technology	Prof. N. Joshi	Inactive	No recent activity recorded in portal
+STU139	Manish Pandey	manish.pandey@college.edu	B.Tech Information Technology	Prof. N. Joshi	Active	Consistent attendance and coursework progress
+STU140	Zoya Khan	zoya.khan@college.edu	B.Tech Information Technology	Prof. N. Joshi	Completed	Completed semester mentoring cycle
+STU141	Lakshay Jain	lakshay.jain@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Active	Consistent attendance and coursework progress
+STU142	Swati Bhosale	swati.bhosale@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Active	Consistent attendance and coursework progress
+STU143	Deepak Rawat	deepak.rawat@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	At Risk	Needs mentor follow-up on recent assessments
+STU144	Pallavi Deshpande	pallavi.deshpande@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Active	Consistent attendance and coursework progress
+STU145	Saurabh Yadav	saurabh.yadav@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Completed	Completed semester mentoring cycle
+STU146	Ayesha Sheikh	ayesha.sheikh@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	At Risk	Needs mentor follow-up on recent assessments
+STU147	Chirag Patel	chirag.patel@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Active	Consistent attendance and coursework progress
+STU148	Ritika Verma	ritika.verma@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Inactive	No recent activity recorded in portal
+STU149	Mohit Chauhan	mohit.chauhan@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Active	Consistent attendance and coursework progress
+STU150	Sakshi Jadhav	sakshi.jadhav@college.edu	B.Tech Artificial Intelligence	Dr. P. Nair	Completed	Completed semester mentoring cycle
