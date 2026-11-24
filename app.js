@@ -1,10 +1,24 @@
 // --- STATE & STORAGE ---
 const DEFAULT_MENTORS = [
-  { name: "Dr. R. Verma", email: "mentor@edutrack.edu", username: "mentor", password: "123", dept: "CSE (AI & DS)" },
-  { name: "Prof. S. Kulkarni", email: "kulkarni@edutrack.edu", username: "kulkarni", password: "123", dept: "Computer Science" }
+  { name: "Dr. R. Verma", email: "mentor@edutrack.edu", username: "mentor", password: "admin123", dept: "CSE (AI & DS)" },
+  { name: "Prof. S. Kulkarni", email: "kulkarni@edutrack.edu", username: "kulkarni", password: "123", dept: "Computer Science" },
+  { name: "Dr. A. Deshmukh", email: "deshmukh@edutrack.edu", username: "deshmukh", password: "123", dept: "Data Science" },
+  { name: "Prof. N. Joshi", email: "joshi@edutrack.edu", username: "joshi", password: "123", dept: "Information Technology" },
+  { name: "Dr. P. Nair", email: "nair@edutrack.edu", username: "nair", password: "123", dept: "Artificial Intelligence" }
 ];
-// Allow 'admin123' on default account as well
-DEFAULT_MENTORS[0].password = "admin123";
+
+const DEMO_STUDENTS = [
+  { Student_ID: "STU101", Name: "Aarav Sharma", Email: "aarav.sharma@college.edu", Course: "B.Tech CSE (AI & DS)", Mentor: "Dr. R. Verma", Status: "At Risk", Remarks: "Missed 3 consecutive lab sessions" },
+  { Student_ID: "STU102", Name: "Diya Patil", Email: "diya.patil@college.edu", Course: "B.Tech CSE (AI & DS)", Mentor: "Dr. R. Verma", Status: "Active", Remarks: "Consistent attendance and assignment scores" },
+  { Student_ID: "STU103", Name: "Rohan Mehta", Email: "rohan.mehta@college.edu", Course: "B.Tech Computer Science", Mentor: "Prof. S. Kulkarni", Status: "Active", Remarks: "Participating in coding club" },
+  { Student_ID: "STU104", Name: "Ananya Iyer", Email: "ananya.iyer@college.edu", Course: "B.Tech Data Science", Mentor: "Dr. A. Deshmukh", Status: "Completed", Remarks: "Completed semester mentoring cycle" },
+  { Student_ID: "STU105", Name: "Kabir Singh", Email: "kabir.singh@college.edu", Course: "B.Tech IT", Mentor: "Prof. N. Joshi", Status: "Inactive", Remarks: "No response to last 2 check-in emails" },
+  { Student_ID: "STU106", Name: "Sneha Rao", Email: "sneha.rao@college.edu", Course: "B.Tech AI", Mentor: "Dr. P. Nair", Status: "At Risk", Remarks: "Low mid-term score in Engineering Mechanics" },
+  { Student_ID: "STU107", Name: "Vikram Joshi", Email: "vikram.joshi@college.edu", Course: "B.Tech Computer Science", Mentor: "Prof. S. Kulkarni", Status: "Active", Remarks: "On track for project submission" },
+  { Student_ID: "STU108", Name: "Meera Nair", Email: "meera.nair@college.edu", Course: "B.Tech Data Science", Mentor: "Dr. A. Deshmukh", Status: "At Risk", Remarks: "Needs extra support with Python assignments" },
+  { Student_ID: "STU109", Name: "Aditya Verma", Email: "aditya.verma@college.edu", Course: "B.Tech IT", Mentor: "Prof. N. Joshi", Status: "Completed", Remarks: "All coursework verified" },
+  { Student_ID: "STU110", Name: "Priya Kulkarni", Email: "priya.kulkarni@college.edu", Course: "B.Tech AI", Mentor: "Dr. P. Nair", Status: "Active", Remarks: "Strong progress in lab practicals" }
+];
 
 let mentors = JSON.parse(localStorage.getItem("edutrack_mentors")) || DEFAULT_MENTORS;
 let activeMentor = null;
@@ -125,10 +139,10 @@ async function loadDataset(dsKey) {
       const buf = await res.arrayBuffer();
       const wb = XLSX.read(buf, { type: "array" });
       const raw = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
-      DATASETS[dsKey].records = raw.map(normalizeRow);
+      DATASETS[dsKey].records = raw.length > 0 ? raw.map(normalizeRow) : (dsKey === "file1" ? [...DEMO_STUDENTS] : []);
     } catch (err) {
-      DATASETS[dsKey].records = [];
-      console.warn(`Could not fetch ${DATASETS[dsKey].path}:`, err);
+      DATASETS[dsKey].records = dsKey === "file1" ? [...DEMO_STUDENTS] : [];
+      console.warn(`Could not fetch ${DATASETS[dsKey].path}, using fallback:`, err);
     }
   }
   refreshAllViews();
